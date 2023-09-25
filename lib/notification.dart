@@ -11,7 +11,7 @@ class NotificationPage extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           NotificationItem(
-            title: 'Order Delivered',
+            title: 'Order delivered',
             message: 'Your order #12345 has been delivered.',
             time: '2 minutes ago',
             icon: Icons.check_circle,

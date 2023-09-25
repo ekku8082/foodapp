@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -8,122 +11,126 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  List<CartItem> cartItems = [
-    CartItem(name: "Burger", price: 75.99, quantity: 2),
-    CartItem(name: "Pizza", price: 550.99, quantity: 1),
-    // Add more items as needed
-  ];
+
+  void initState(){
+    super.initState();
+    fetchCartItems();
+
+
+  }
+
+
+
+  List<String> foodIemIncart=[];
+  List food_pathInCart=[];
+  List food_priceInCart=[];
+
+
+  //function to load liked items in the cart
+
+  Future fetchCartItems() async {
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+    foodIemIncart=prefs.getStringList("food_name")!;
+    food_pathInCart=prefs.getStringList("food_path")!;
+    food_priceInCart=prefs.getStringList("food_price")!;
+    print("Ekta.." +foodIemIncart.toString());
+    setState(() {
+
+    });
+  }
+
 
   PaymentOption selectedPaymentOption = PaymentOption.CashOnDelivery;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return (foodIemIncart.isEmpty)?Scaffold(body: Center(child: Container(
+      padding: EdgeInsets.only(top: 100),
+        child: Column(
+      children: [
+        Lottie.asset('assets/Lotties/data_not_found.json'),
+        ElevatedButton(onPressed: (){
+          Navigator.pushNamed(context, 'navBar');
+
+        }, child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Icon(Icons.arrow_back,size: 17),
+            Text("Back to food shopping",style:GoogleFonts.lato(fontWeight: FontWeight.w600,fontSize: 15,)),
+
+
+          ],
+        ),
+          style: ElevatedButton.styleFrom(
+              shape: StadiumBorder(),
+              backgroundColor: Colors.brown.shade600,
+              fixedSize: Size(300, 50)
+          ),)
+      ],
+    )))):Scaffold(
       appBar: AppBar(
-        title: Text('Cart'),
+        leading: GestureDetector(onTap: (){
+          Navigator.pushNamed(context, 'navBar');
+        },child: Icon(Icons.arrow_back)),
+        title: Text((foodIemIncart.isEmpty)?"":foodIemIncart[0]),
+
       ),
       body: StaggeredGridView.countBuilder(
         crossAxisCount: 2,
-        itemCount: cartItems.length,
+        itemCount: foodIemIncart.length,
         itemBuilder: (BuildContext context, int index) {
-          final item = cartItems[index];
           return Card(
             elevation: 4.0,
             margin: EdgeInsets.all(4.0),
-            child: ListTile(
-              title: Text(item.name),
-              subtitle: Text('Price: \Rs.${item.price.toStringAsFixed(2)}'),
-              trailing: Text('Quantity: ${item.quantity}'),
-            ),
+            child: Container(
+              padding: EdgeInsets.only(left: 10,right: 10),
+              height: 120,width: MediaQuery.sizeOf(context).width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(height: 60,width:100,decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10)
+                      ),child: Image.asset((food_pathInCart.isEmpty)?"":food_pathInCart[index],)),
+SizedBox(height: 10,),
+                      Text((foodIemIncart.isEmpty)?"":foodIemIncart[index]),
+                      Text('Price: \Rs. '+food_priceInCart[index]),
+                    ],
+                  ),
+
+                 Row(
+                   children: [
+                     ElevatedButton(onPressed: ()async {
+                       foodIemIncart.removeAt(index);
+                       SharedPreferences prefs= await SharedPreferences.getInstance();
+                       prefs.setStringList("food_name", foodIemIncart);
+                       //prefs.setStringList("totalAmout", cartItems)
+                       print("Removed "+foodIemIncart.toString());
+                       setState(() {
+
+                       });
+
+                     }, child: Icon(Icons.remove),style: ElevatedButton.styleFrom(
+                         shape: CircleBorder(),
+                         fixedSize: Size(10, 10),
+                         backgroundColor: Colors.red
+                     ),),
+                     Text('Quantity: '+foodIemIncart.length.toString()),
+                   ],
+                 )
+                ],
+              ),
+            )
           );
         },
         staggeredTileBuilder: (int index) => StaggeredTile.fit(2),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: 420.0,
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Total: \Rs.${calculateTotal().toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 18),
-              ),
-              SizedBox(height:0),
-              Text(
-                'Select Payment Method:',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height:0),
-              Row(
-                children: [
-                  Radio(
-                    value: PaymentOption.CashOnDelivery,
-                    groupValue: selectedPaymentOption,
-                    onChanged: (PaymentOption? value) {
-                      setState(() {
-                        selectedPaymentOption = value!;
-                      });
-                    },
-                  ),
-                  Text('Cash on Delivery'),
-                ],
-              ),
-              Row(
-                children: [
-                  Radio(
-                    value: PaymentOption.Card,
-                    groupValue: selectedPaymentOption,
-                    onChanged: (PaymentOption? value) {
-                      setState(() {
-                        selectedPaymentOption = value!;
-                      });
-                    },
-                  ),
-                  Text('Credit/Debit Card'),
-                ],
-              ),
-              Row(
-                children: [
-                  Radio(
-                    value: PaymentOption.UPI,
-                    groupValue: selectedPaymentOption,
-                    onChanged: (PaymentOption? value) {
-                      setState(() {
-                        selectedPaymentOption = value!;
-                      });
-                    },
-                  ),
-                  Text('UPI'),
-                ],
-              ),
-              SizedBox(height:0),
-              ElevatedButton(
-                onPressed: () {
-                  // Implement payment logic here based on selectedPaymentOption
-                  // You can navigate to a payment screen or integrate with a payment gateway.
-                  Fluttertoast.showToast(
-                    msg: 'Payment Successful!',
-                    toastLength: Toast.LENGTH_SHORT,
-                  );
-                },
-                child: Text('Pay Now'),
-              ),
-            ],
-          ),
-        ),
-      ),
+
     );
   }
 
-  double calculateTotal() {
-    double total = 0.0;
-    for (var item in cartItems) {
-      total += item.price * item.quantity;
-    }
-    return total;
-  }
 }
 
 enum PaymentOption { CashOnDelivery, Card, UPI }

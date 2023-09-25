@@ -1,37 +1,49 @@
 import 'package:abc/widgets/Homenavbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'firstpage.dart';
 
 class homepage extends StatelessWidget {
-  const homepage({super.key});
+   homepage({super.key});
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.only(bottom: 50,left: 10,right: 10),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Container(
+         // color: Colors.grey,
+          padding: EdgeInsets.only(top: 100,left: 30,right: 30),
           child: Column(
             children: [
-              Image.asset("assets/images/abc.jpg",height: 320,width: 450,fit: BoxFit.cover,),//imgasset
-              Container(height: 500,
-                child: Column(children: [
-                  Text("Login now",style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.w700,
+             // Image.asset("assets/images/logo/home_logo.jpeg",height: 320,width: 450,fit: BoxFit.cover,),//imgasset
+              Container(
+               // color: Colors.green,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  Text("Login",style: GoogleFonts.lato(color:Colors.black,fontSize: 50,fontWeight: FontWeight.w400)
                   ),
-                  ),
+
                   Padding(
                     padding: const EdgeInsets.only(
                       top: 25,
                       bottom: 20,
                     ),
-                    child: const  Text("please enter details below to continue"),
+                    child:   Text("Please enter details below to continue",style: GoogleFonts.lato(color:Colors.grey,fontSize: 15,fontWeight: FontWeight.w400)),
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent,
                       borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.black87)
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -41,7 +53,7 @@ class homepage extends StatelessWidget {
                       child: TextFormField(
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'username',
+                          hintText: 'Username',
                         ),
                       ),
                     ),
@@ -49,8 +61,9 @@ class homepage extends StatelessWidget {
                   SizedBox(height: 20),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent,
+
                       borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.black87)
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -60,11 +73,19 @@ class homepage extends StatelessWidget {
                       child: TextFormField(
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'password',
+                          hintText: 'Password',
                         ),
                       ),
                     ),
                   ),
+                  SizedBox(height: 15,),
+
+                ],),
+              ),
+              Container(//color: Colors.red,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: [
                   Align(
                     alignment: Alignment.centerLeft,
                     child: InkWell(
@@ -72,50 +93,72 @@ class homepage extends StatelessWidget {
 
                       },
                       child: Text("Forgot password?",
-                        style: TextStyle(color: Colors.deepOrange),),
+                        style: TextStyle(color: Colors.black87),),
                     ),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: MaterialButton(
-                          color: Colors.red,
-                          shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(100),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Homenav()));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: const Text("LOGIN", style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),),
-                          ),
-                        ),
-                      ),
-                    ],
+                  SizedBox(height: 50,),
 
-                  ),
-                  const Spacer(),
+
+                  // Login Button
+
+                 ElevatedButton(
+                     onPressed: (){ Navigator.of(context).push(MaterialPageRoute(builder: (context) => Homenav()));},
+                     child: Text("Log In",style: GoogleFonts.lato(fontSize: 20,fontWeight: FontWeight.w600),),
+                 style: ElevatedButton.styleFrom(
+                   fixedSize: Size(200, 50),
+                   shape: StadiumBorder(),
+                   backgroundColor: Colors.brown.shade600
+                 ),),
+                  SizedBox(height: 40,),
+                  GestureDetector(onTap: () async {
+
+                    signup(context);
+                  },child: SvgPicture.asset('assets/images/logo/google.svg')),
+
+                SizedBox(height: 50,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("don't have an account?"),
-                      TextButton(onPressed: (){}, child: Text("Register", style: TextStyle(
+                      Text("Don't have an account?"),
+                      TextButton(onPressed: (){
+                        Navigator.pushNamed(context, 'signup');
+                      }, child: Text("Register", style: TextStyle(
                         color: Colors.red,
                       ),
                       ),
                       ),
                     ],
                   )
-                ],),
-              )
+                ],
+              ),),
             ],
           ),
         ),
       ),
     );
   }
+
+   Future<void> signup(BuildContext context) async {
+     await EasyLoading.show(status: "Signing up");
+     final GoogleSignIn googleSignIn = GoogleSignIn();
+     final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+     if (googleSignInAccount != null) {
+       final GoogleSignInAuthentication googleSignInAuthentication =
+       await googleSignInAccount.authentication;
+       final AuthCredential authCredential = GoogleAuthProvider.credential(
+           idToken: googleSignInAuthentication.idToken,
+           accessToken: googleSignInAuthentication.accessToken);
+
+       // Getting users credential
+       UserCredential result = await auth.signInWithCredential(authCredential);
+       User? user = result.user;
+
+       if (result != null) {
+         Navigator.pushReplacement(
+             context, MaterialPageRoute(builder: (context) => Homenav()));
+         EasyLoading.dismiss();
+       }  // if result not null we simply call the MaterialpageRoute,
+       // for go to the HomePage screen
+     }
+   }
 }

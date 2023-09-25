@@ -44,12 +44,12 @@ final List<Offer> specialOffers = [
   Offer(
     title: '50% Off on Pizzas',
     description: 'Order any pizza and get 50% off your second pizza.',
-    image: 'assets/images/pizza1.jpg',
+    image: 'assets/images/pizza/pizza1.jpg',
   ),
   Offer(
     title: 'Free Delivery',
     description: 'Enjoy free delivery on orders above \$25.',
-    image: 'assets/images/pizza1.jpg',
+    image: 'assets/images/pizza/pizza3.jpg',
   ),
   // Add more offers as needed
 ];

@@ -38,7 +38,7 @@ final List<FoodItem> favoriteFoodItems = [
   FoodItem(
     name: 'Hamburger',
     description: 'patty with lettuce, tomato, and cheese.',
-    image: 'assets/images/bug2.jpg',
+    image: 'assets/images/1.jpg',
   ),
   FoodItem(
     name: 'Pizza',

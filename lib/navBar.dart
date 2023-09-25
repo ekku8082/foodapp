@@ -1,8 +1,6 @@
 import 'package:abc/pasta.dart';
 import 'package:abc/pizza.dart';
 import 'package:abc/test.dart';
-import 'package:abc/widgets/Homenavbar.dart';
-import 'package:abc/widgets/itemswidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,11 +8,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'desert.dart';
 
-class first extends StatelessWidget {
-   first({super.key});
+class navbar extends StatefulWidget {
+  const navbar({super.key});
 
+  @override
+  State<navbar> createState() => _navbarState();
+}
 
-  List<String> addItemsWhenComigback=[];
+class _navbarState extends State<navbar> {
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -26,33 +28,33 @@ class first extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Padding(padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Row(children: [
-                InkWell(
-                  onTap: (){},
-                  child: Icon(Icons.abc_rounded,
-                    color: Colors.white,
-                    size: 35,
+                Padding(padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(children: [
+                    InkWell(
+                      onTap: (){},
+                      child: Icon(Icons.abc_rounded,
+                        color: Colors.white,
+                        size: 35,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: (){},
+                      child: Icon(Icons.search,
+                        color: Colors.white,
+                        size: 35,
+                      ),
+                    ),
+                  ],
                   ),
                 ),
-                InkWell(
-                  onTap: (){},
-                  child: Icon(Icons.search,
-                    color: Colors.white,
-                    size: 35,
-                  ),
-                ),
-              ],
-              ),
-              ),
                 SizedBox(height: 30),
                 Padding(padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Text("Hot & Fast Food", style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-                ),
+                  child: Text("Hot & Fast Food", style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  ),
                 ),
                 SizedBox(height: 5),
                 Padding(padding: EdgeInsets.symmetric(horizontal: 15),
@@ -79,16 +81,16 @@ class first extends StatelessWidget {
                     child: TabBarView(
 
                       children: [
-                      test(),
+                        test(),
                         pizza(),
                         pasta(),
                         desert(),
-                  // Container(color: Colors.red),
-                  // Container(color: Colors.red),
-                  //       Container(color: Colors.red),
+                        // Container(color: Colors.red),
+                        // Container(color: Colors.red),
+                        //       Container(color: Colors.red),
 
-                ],)),
-            ],
+                      ],)),
+              ],
             ),
           ),
 

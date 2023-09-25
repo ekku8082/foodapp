@@ -1,22 +1,32 @@
 // import 'dart:js';
 
-import 'package:abc/bottomnavigator/bottomnav.dart';
-import 'package:abc/profilepage.dart';
-import 'package:abc/singleitempage.dart';
+
+import 'package:abc/Signup/signup.dart';
+import 'package:abc/stratpage.dart';
 import 'package:abc/widgets/Homenavbar.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'firebase_options.dart';
 
-import 'cartpage.dart';
-import 'favourite.dart';
-import 'firstpage.dart';
 import 'homepage.dart';
-import 'notification.dart';
-import 'offers.dart';
 
-void main() {
+
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MaterialApp(
+    builder: EasyLoading.init(),
 //home: CartPage(),
-      home: homepage(),
+      home: startpage(),
+      routes: {
+        "login" :(context) => homepage(),
+        "signup" :(context) =>  signup(),
+        "navBar" :(context) =>  Homenav(),
+      },
       //home: EditProfilePage(),
       //home: NotificationPage(),
     //home: FavoriteFoodPage(),
